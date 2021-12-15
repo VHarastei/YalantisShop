@@ -1,4 +1,4 @@
-import { IProductsWithPagination } from './../types'
+import { IProduct, IProductsWithPagination } from 'types'
 import axios from 'axios'
 
 const instance = axios.create({
@@ -9,4 +9,6 @@ export type GetProductsPayload = { page?: number; perPage?: number }
 export const Api = {
   getProducts: ({ page = 1, perPage = 20 }: GetProductsPayload): Promise<IProductsWithPagination> =>
     instance.get(`products?page=${page}&perPage=${perPage}`).then(({ data }) => data),
+  getProduct: (productId: string): Promise<IProduct> =>
+    instance.get(`products/${productId}`).then(({ data }) => data),
 }

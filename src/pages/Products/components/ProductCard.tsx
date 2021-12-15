@@ -3,6 +3,7 @@ import { IProduct } from 'types'
 import originIcon from 'assets/origin.svg'
 import editIcon from 'assets/edit.svg'
 import { Link } from 'react-router-dom'
+import { Button } from 'components/Button'
 
 export const ProductCard: React.FC<IProduct> = ({ id, name, price, origin, isEditable }) => {
   return (
@@ -34,9 +35,7 @@ export const ProductCard: React.FC<IProduct> = ({ id, name, price, origin, isEdi
         <span className="mr-2 text-xl font-medium text-gray-500">Price:</span>
         <span className="text-3xl font-medium">{`${price}$`}</span>
       </div>
-      <button className="p-2 w-full text-xl text-white bg-green-500 hover:bg-green-600 rounded-lg transition-all">
-        Add to Cart
-      </button>
+      <Button fullWidth>Add to Cart</Button>
     </li>
   )
 }

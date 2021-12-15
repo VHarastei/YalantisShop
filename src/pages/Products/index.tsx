@@ -1,4 +1,5 @@
 import { Api } from 'api'
+import { ErrorCard } from 'components/ErrorCard'
 import { useQuery } from 'hooks/useQuery'
 import React, { useCallback, useEffect, useState } from 'react'
 import { IProductsWithPagination } from 'types'
@@ -31,12 +32,7 @@ export const Products = () => {
     getProducts()
   }, [getProducts])
 
-  if (isError)
-    return (
-      <div className="flex justify-center items-center mt-28">
-        <h1 className="text-4xl font-semibold text-green-500">Oops! Something went wrong...</h1>
-      </div>
-    )
+  if (isError) return <ErrorCard />
 
   return (
     <div className="mb-4">

@@ -12,12 +12,18 @@ import { Preloader } from 'components/Preloader'
 import { Paper } from 'components/Paper'
 import { ErrorCard } from 'components/ErrorCard'
 import { Button } from 'components/Button'
+import { useCartDispatch } from 'state'
 
 export const Product = () => {
   const { productId } = useParams()
+  const dispatch = useCartDispatch()
 
   const [isError, setIsError] = useState(false)
   const [product, setProduct] = useState<IProduct | null>(null)
+
+  const hadleAddProduct = () => {
+    if (product) dispatch({ type: 'ADD_PRODUCT', payload: product })
+  }
 
   const getProduct = useCallback(async () => {
     try {
@@ -70,7 +76,9 @@ export const Product = () => {
               <span className="mr-2 text-xl font-semibold text-gray-500">Price:</span>
               <span className="text-3xl font-bold">{`${product.price}$`}</span>
             </div>
-            <Button fullWidth>Add to Cart</Button>
+            <Button onClick={hadleAddProduct} fullWidth>
+              Add to Cart
+            </Button>
           </Paper>
         </div>
       ) : (

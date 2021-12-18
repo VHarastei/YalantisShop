@@ -1,26 +1,23 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { Layout } from 'components/Layout'
+import { Cart } from 'pages/Cart'
+import { Product } from 'pages/Product'
+import { Products } from 'pages/Products'
+import React from 'react'
+import { Route, Routes } from 'react-router-dom'
+import { CartProvider } from 'state'
 
-function App() {
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <CartProvider>
+      <Layout>
+        <Routes>
+          <Route path="/products/:productId" element={<Product />} />
+          <Route path="/cart" element={<Cart />} />
+          <Route path="/" element={<Products />} />
+        </Routes>
+      </Layout>
+    </CartProvider>
+  )
 }
 
-export default App;
+export default App

@@ -21,3 +21,10 @@ export interface IPagination {
   currentPage: number
   numberOfButtons: number
 }
+
+export enum Status {
+  SUCCESS = 'SUCCESS',
+  LOADING = 'LOADING',
+  ERROR = 'ERROR',
+  NEVER = 'NEVER',
+}

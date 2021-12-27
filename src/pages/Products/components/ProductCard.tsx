@@ -1,17 +1,19 @@
-import React from 'react'
-import { IProduct } from 'types'
-import originIcon from 'assets/origin.svg'
+import { EntityId } from '@reduxjs/toolkit'
 import editIcon from 'assets/edit.svg'
-import { Link } from 'react-router-dom'
+import originIcon from 'assets/origin.svg'
 import { Button } from 'components/Button'
-import { useCartDispatch } from 'state'
+import { useAppSelector } from 'hooks/useAppSelector'
+import React from 'react'
+import { Link } from 'react-router-dom'
+import { selectProductById } from 'store/slices/productsSlice'
+import { ProductCardPreloader } from './ProductCardPreloader'
 
-export const ProductCard: React.FC<IProduct> = ({ children, ...product }) => {
-  const dispatch = useCartDispatch()
+export const ProductCard: React.FC<{ productId: EntityId }> = ({ productId }) => {
+  const product = useAppSelector((state) => selectProductById(state, productId))
 
-  const hadleAddProduct = () => {
-    dispatch({ type: 'ADD_PRODUCT', payload: product })
-  }
+  const hadleAddProduct = () => {}
+
+  if (!product) return <ProductCardPreloader />
 
   return (
     <li className="p-4 w-full max-w-s bg-white rounded-lg">

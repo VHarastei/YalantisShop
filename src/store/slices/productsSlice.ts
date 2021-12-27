@@ -28,11 +28,7 @@ export const fetchProducts = createAsyncThunk<IProductsWithPagination, GetProduc
 export const productsSlice = createSlice({
   name: 'products',
   initialState,
-  reducers: {
-    setProductsStatus: (state, action: PayloadAction<Status>) => {
-      state.status = action.payload
-    },
-  },
+  reducers: {},
   extraReducers: (builder) =>
     builder
       .addCase(
@@ -58,7 +54,7 @@ export const productsSlice = createSlice({
 })
 
 export default productsSlice.reducer
-export const { setProductsStatus } = productsSlice.actions
+
 export const {
   selectAll: selectAllProducts,
   selectById: selectProductById,

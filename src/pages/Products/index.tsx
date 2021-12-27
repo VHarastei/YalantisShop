@@ -5,7 +5,7 @@ import { useQuery } from 'hooks/useQuery'
 import React, { useCallback, useEffect, useState } from 'react'
 import {
   fetchProducts,
-  selectAllProducts,
+  selectProductIds,
   selectProductsPagination,
   selectProductsStatus,
 } from 'store/slices/productsSlice'
@@ -20,7 +20,7 @@ export const Products = () => {
 
   const [currentPage, setCurrentPage] = useState<number>(Number(query.get('page')) || 1)
 
-  const products = useAppSelector(selectAllProducts)
+  const productIds = useAppSelector(selectProductIds)
   const status = useAppSelector(selectProductsStatus)
   const pagination = useAppSelector(selectProductsPagination)
 
@@ -30,10 +30,10 @@ export const Products = () => {
   }, [])
 
   useEffect(() => {
-    if (!products.length || pagination.page !== currentPage) {
+    if (!productIds.length || pagination.page !== currentPage) {
       dispatch(fetchProducts({ page: currentPage, perPage: 20 }))
     }
-  }, [currentPage, dispatch, products.length, pagination.page])
+  }, [currentPage, dispatch, productIds.length, pagination.page])
 
   if (status === Status.ERROR) return <ErrorCard />
 
@@ -42,7 +42,7 @@ export const Products = () => {
       <h1 className="mb-4 text-4xl font-bold text-center text-green-500">List of Products</h1>
       <ul className="flex flex-wrap gap-4 justify-center">
         {status === Status.SUCCESS
-          ? products.map((prod) => <ProductCard {...prod} key={prod.id} />)
+          ? productIds.map((id) => <ProductCard productId={id} key={id} />)
           : [...Array(20)].map((_, i) => <ProductCardPreloader key={i} />)}
       </ul>
       {status === Status.SUCCESS && (

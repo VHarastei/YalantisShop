@@ -30,10 +30,11 @@ export const Products = () => {
   }, [])
 
   useEffect(() => {
-    dispatch(fetchProducts({ page: currentPage, perPage: 20 }))
-  }, [currentPage, dispatch])
+    if (!products.length || pagination.page !== currentPage) {
+      dispatch(fetchProducts({ page: currentPage, perPage: 20 }))
+    }
+  }, [currentPage, dispatch, products.length, pagination.page])
 
-  console.log(products)
   if (status === Status.ERROR) return <ErrorCard />
 
   return (

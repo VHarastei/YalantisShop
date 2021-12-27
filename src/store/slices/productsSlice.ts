@@ -25,18 +25,14 @@ export const fetchProducts = createAsyncThunk<IProductsWithPagination, GetProduc
   }
 )
 
-export const fetchProduct = createAsyncThunk<IProduct, string>(
-  'products/fetchProducts',
-  async (productId) => {
-    const products = await Api.getProduct(productId)
-    return products
-  }
-)
-
 export const productsSlice = createSlice({
   name: 'products',
   initialState,
-  reducers: {},
+  reducers: {
+    setProductsStatus: (state, action: PayloadAction<Status>) => {
+      state.status = action.payload
+    },
+  },
   extraReducers: (builder) =>
     builder
       .addCase(
@@ -55,14 +51,14 @@ export const productsSlice = createSlice({
       .addCase(
         fetchProducts.rejected.type,
         (state, action: PayloadAction<never, never, never, { message: string }>) => {
-          state.status = Status.ERROR
           state.error = action.error.message
+          state.status = Status.ERROR
         }
       ),
 })
 
 export default productsSlice.reducer
-
+export const { setProductsStatus } = productsSlice.actions
 export const {
   selectAll: selectAllProducts,
   selectById: selectProductById,

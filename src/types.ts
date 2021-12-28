@@ -8,6 +8,10 @@ export interface IProduct {
   updatedAt: string
 }
 
+export interface IProductWithQuantity extends IProduct {
+  quantity: number
+}
+
 export interface IProductsWithPagination {
   items: IProduct[]
   totalItems: number

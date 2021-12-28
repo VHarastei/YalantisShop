@@ -39,7 +39,12 @@ export const cartSlice = createSlice({
       }
       state.totalProducts--
     },
+    deleteCartProduct: (state, action: PayloadAction<IProductWithQuantity>) => {
+      const { id, quantity } = action.payload
 
+      cartAdapter.removeOne(state, id)
+      state.totalProducts -= quantity
+    },
     clearCartProducts: (state) => {
       cartAdapter.removeAll(state)
       state.totalProducts = 0
@@ -49,7 +54,8 @@ export const cartSlice = createSlice({
 
 export default cartSlice.reducer
 
-export const { addCartProduct, removeCartProduct, clearCartProducts } = cartSlice.actions
+export const { addCartProduct, removeCartProduct, deleteCartProduct, clearCartProducts } =
+  cartSlice.actions
 
 export const {
   selectAll: selectAllCartProducts,

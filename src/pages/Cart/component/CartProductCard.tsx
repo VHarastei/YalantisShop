@@ -6,7 +6,12 @@ import { Paper } from 'components/Paper'
 import { useAppDispatch } from 'hooks/useAppDispatch'
 import { useAppSelector } from 'hooks/useAppSelector'
 import React, { memo } from 'react'
-import { addCartProduct, removeCartProduct, selectCartProductById } from 'store/slices/cartSlice'
+import {
+  addCartProduct,
+  deleteCartProduct,
+  removeCartProduct,
+  selectCartProductById,
+} from 'store/slices/cartSlice'
 
 export const CartProductCard: React.FC<{ productId: EntityId }> = memo(({ productId }) => {
   const dispatch = useAppDispatch()
@@ -22,9 +27,19 @@ export const CartProductCard: React.FC<{ productId: EntityId }> = memo(({ produc
     dispatch(removeCartProduct(product))
   }
 
+  const handleDeleteProduct = () => {
+    dispatch(deleteCartProduct(product))
+  }
+
   return (
     <li>
       <Paper className="flex relative justify-between items-center mb-4">
+        <button
+          className="absolute top-2 right-4 text-xl font-bold text-gray-500 hover:text-red-500 transition-all"
+          onClick={handleDeleteProduct}
+        >
+          ✕
+        </button>
         <div>
           <h2 className="mb-2 text-2xl font-semibold hover:text-green-500 hover:underline">
             {product.name}

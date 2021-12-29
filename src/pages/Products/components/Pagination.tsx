@@ -1,4 +1,5 @@
 import clsx from 'clsx'
+import { useGetSearchParams } from 'hooks/useGetSearchParams'
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { IPagination } from 'types'
@@ -16,9 +17,15 @@ export const Pagination: React.FC<PropsType> = React.memo(
       ...rest,
     })
 
+    const searchParams = useGetSearchParams(['origins'])
+
     return (
       <nav className="mt-4 text-center">
-        <Link to={`${navLink}${pagination[0] === currentPage ? '' : `?page=${currentPage - 1}`}`}>
+        <Link
+          to={`${navLink}${
+            pagination[0] === currentPage ? '' : `?page=${currentPage - 1}&${searchParams}`
+          }`}
+        >
           <button
             onClick={() => changeCurrentPage(currentPage - 1)}
             disabled={pagination[0] === currentPage}
@@ -32,7 +39,7 @@ export const Pagination: React.FC<PropsType> = React.memo(
         </Link>
         {pagination.map((page) => {
           return (
-            <Link key={page} to={`${navLink}${page === 1 ? '' : `?page=${page}`}`}>
+            <Link key={page} to={`${navLink}${page === 1 ? '' : `?page=${page}${searchParams}`}`}>
               <button
                 onClick={() => changeCurrentPage(page)}
                 className={clsx(
@@ -49,7 +56,9 @@ export const Pagination: React.FC<PropsType> = React.memo(
         })}
         <Link
           to={`${navLink}${
-            pagination[pagination.length - 1] === currentPage ? '' : `?page=${currentPage + 1}`
+            pagination[pagination.length - 1] === currentPage
+              ? ''
+              : `?page=${currentPage + 1}${searchParams}`
           }`}
         >
           <button

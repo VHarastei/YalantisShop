@@ -32,7 +32,17 @@ export const OriginSelect: React.FC<PropsType> = ({ defaultValue = [], onChange 
       classNamePrefix="select"
       defaultValue={defValue}
       onChange={onChange}
-      theme={(theme) => ({ ...theme })}
+      theme={(theme) => ({
+        ...theme,
+        borderRadius: 6,
+        colors: {
+          ...theme.colors,
+          primary75: '#10B98175',
+          primary50: '#10B98150',
+          primary25: '#10B98125',
+          primary: '#10B981',
+        },
+      })}
     />
   )
 }

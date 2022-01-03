@@ -17,13 +17,13 @@ export const Pagination: React.FC<PropsType> = React.memo(
       ...rest,
     })
 
-    const searchParams = useGetSearchParams(['origins'])
+    const sp = useGetSearchParams(['origins', 'min', 'max'])
 
     return (
       <nav className="mt-4 text-center">
         <Link
           to={`${navLink}${
-            pagination[0] === currentPage ? '' : `?page=${currentPage - 1}&${searchParams}`
+            pagination[0] === currentPage ? '' : `?page=${currentPage - 1}${sp ? `&${sp}` : ''}`
           }`}
         >
           <button
@@ -39,7 +39,10 @@ export const Pagination: React.FC<PropsType> = React.memo(
         </Link>
         {pagination.map((page) => {
           return (
-            <Link key={page} to={`${navLink}${page === 1 ? '' : `?page=${page}${searchParams}`}`}>
+            <Link
+              key={page}
+              to={`${navLink}${page === 1 ? `?${sp}` : `?page=${page}${sp ? `&${sp}` : ''}`}`}
+            >
               <button
                 onClick={() => changeCurrentPage(page)}
                 className={clsx(
@@ -58,7 +61,7 @@ export const Pagination: React.FC<PropsType> = React.memo(
           to={`${navLink}${
             pagination[pagination.length - 1] === currentPage
               ? ''
-              : `?page=${currentPage + 1}${searchParams}`
+              : `?page=${currentPage + 1}${sp ? `&${sp}` : ''}`
           }`}
         >
           <button

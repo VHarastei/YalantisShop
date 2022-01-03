@@ -4,13 +4,13 @@ import originIcon from 'assets/origin.svg'
 import { Button } from 'components/Button'
 import { useAppDispatch } from 'hooks/useAppDispatch'
 import { useAppSelector } from 'hooks/useAppSelector'
-import React from 'react'
+import React, { memo } from 'react'
 import { Link } from 'react-router-dom'
 import { addCartProduct } from 'store/slices/cartSlice'
 import { selectProductById } from 'store/slices/productsSlice'
 import { ProductCardPreloader } from './ProductCardPreloader'
 
-export const ProductCard: React.FC<{ productId: EntityId }> = ({ productId }) => {
+export const ProductCard: React.FC<{ productId: EntityId }> = memo(({ productId }) => {
   const dispatch = useAppDispatch()
   const product = useAppSelector((state) => selectProductById(state, productId))
 
@@ -58,4 +58,4 @@ export const ProductCard: React.FC<{ productId: EntityId }> = ({ productId }) =>
       </Button>
     </li>
   )
-}
+})

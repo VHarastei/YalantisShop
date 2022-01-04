@@ -24,6 +24,7 @@ export const Products = () => {
   const [searchParams] = useSearchParams()
 
   const [currentPage, setCurrentPage] = useState<number>(Number(searchParams.get('page')) || 1)
+  const [itemsPerPage, setItemsPerPage] = useState(25)
 
   const { origins, handleChangeOrigin } = useOriginFilter(() => changeCurrentPage(1))
   const { minPrice, maxPrice, ...priceFilter } = usePriceFilter(() => changeCurrentPage(1))
@@ -41,21 +42,21 @@ export const Products = () => {
     dispatch(
       fetchProducts({
         page: currentPage,
-        perPage: 20,
+        perPage: itemsPerPage,
         origins,
         minPrice,
         maxPrice,
       })
     )
     // eslint-disable-next-line
-  }, [currentPage, dispatch, origins])
+  }, [currentPage, itemsPerPage, origins, dispatch])
 
   const handleUsePriceFilter = () => {
     priceFilter.applyPriceFilters()
     dispatch(
       fetchProducts({
         page: currentPage,
-        perPage: 20,
+        perPage: itemsPerPage,
         origins,
         minPrice,
         maxPrice,
@@ -104,10 +105,11 @@ export const Products = () => {
       {status === Status.SUCCESS && (
         <Pagination
           currentPage={currentPage}
-          itemsPerPage={pagination.perPage}
           numberOfItems={pagination.totalItems}
           numberOfButtons={5}
           changeCurrentPage={changeCurrentPage}
+          itemsPerPage={itemsPerPage}
+          setItemsPerPage={setItemsPerPage}
         />
       )}
     </div>

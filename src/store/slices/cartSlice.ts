@@ -1,5 +1,6 @@
 import { createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { IProduct, IProductWithQuantity, Status } from 'types'
+import { IProduct, IProductWithQuantity } from 'types'
+import { loadState } from 'utils/loadState'
 import { RootState } from '../index'
 
 const cartAdapter = createEntityAdapter<IProductWithQuantity>({
@@ -8,13 +9,13 @@ const cartAdapter = createEntityAdapter<IProductWithQuantity>({
 
 const initialState = cartAdapter.getInitialState({
   totalProducts: 0,
-  status: Status.NEVER,
-  error: null as null | string,
 })
+
+const persistedState = loadState<typeof initialState>('cart') ?? initialState
 
 export const cartSlice = createSlice({
   name: 'cart',
-  initialState,
+  initialState: persistedState,
   reducers: {
     addCartProduct: (state, action: PayloadAction<IProduct>) => {
       const existingProduct = state.entities[action.payload.id]
@@ -64,5 +65,3 @@ export const {
 } = cartAdapter.getSelectors<RootState>((state) => state.cart)
 
 export const selectCartTotalProducts = (state: RootState) => state.cart.totalProducts
-export const selectCartError = (state: RootState) => state.cart.error
-export const selectCartStatus = (state: RootState) => state.cart.status

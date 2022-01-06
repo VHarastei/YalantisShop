@@ -58,6 +58,7 @@ export const Pagination: React.FC<PropsType> = React.memo(
               >
                 <button
                   onClick={() => changeCurrentPage(page)}
+                  disabled={page === currentPage}
                   className={clsx(
                     page === currentPage
                       ? 'text-white bg-green-500 hover:bg-green-600'

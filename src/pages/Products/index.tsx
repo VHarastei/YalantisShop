@@ -99,19 +99,25 @@ export const Products = () => {
       <ul className="flex flex-wrap gap-4 justify-center">
         {status === Status.SUCCESS
           ? productIds.map((id) => <ProductCard productId={id} key={id} />)
-          : [...Array(20)].map((_, i) => <ProductCardPreloader key={i} />)}
+          : [...Array(itemsPerPage)].map((_, i) => <ProductCardPreloader key={i} />)}
       </ul>
 
-      {status === Status.SUCCESS && (
-        <Pagination
-          currentPage={currentPage}
-          numberOfItems={pagination.totalItems}
-          numberOfButtons={5}
-          changeCurrentPage={changeCurrentPage}
-          itemsPerPage={itemsPerPage}
-          setItemsPerPage={setItemsPerPage}
-        />
-      )}
+      {status === Status.SUCCESS ? (
+        productIds.length ? (
+          <Pagination
+            currentPage={currentPage}
+            numberOfItems={pagination.totalItems}
+            numberOfButtons={5}
+            changeCurrentPage={changeCurrentPage}
+            itemsPerPage={itemsPerPage}
+            setItemsPerPage={setItemsPerPage}
+          />
+        ) : (
+          <h1 className="mt-8 text-3xl font-semibold text-center">
+            No products matching your filters were found!
+          </h1>
+        )
+      ) : null}
     </div>
   )
 }

@@ -1,8 +1,8 @@
 import { saveState } from './../utils/saveState'
 import { configureStore } from '@reduxjs/toolkit'
-import productsReducer from './slices/productsSlice'
-import productReducer from './slices/productSlice'
-import cartReducer from './slices/cartSlice'
+import productsReducer from './slices/products/slice'
+import productReducer from './slices/product/slice'
+import cartReducer from './slices/cart/slice'
 import throttle from 'lodash/throttle'
 
 export const store = configureStore({

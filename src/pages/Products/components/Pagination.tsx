@@ -1,18 +1,19 @@
 import clsx from 'clsx'
+import { useAppDispatch } from 'hooks/useAppDispatch'
 import { useGetSearchParams } from 'hooks/useGetSearchParams'
 import React from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
+import { changeCurrentPage, changeItemsPerPage } from 'store/slices/products/slice'
 import { IPagination } from 'types'
 import { createPagination } from 'utils/createPagination'
 
 type PropsType = IPagination & {
   navLink?: string
-  changeCurrentPage: (newPage: number) => void
-  setItemsPerPage: (newVal: number) => void
 }
 
 export const Pagination: React.FC<PropsType> = React.memo(
-  ({ currentPage, itemsPerPage, navLink = '', changeCurrentPage, setItemsPerPage, ...rest }) => {
+  ({ navLink = '', currentPage, itemsPerPage, ...rest }) => {
+    const dispatch = useAppDispatch()
     const [searchParams, setSearchParams] = useSearchParams()
 
     const sp = useGetSearchParams(['origins', 'min', 'max'])
@@ -23,9 +24,14 @@ export const Pagination: React.FC<PropsType> = React.memo(
       ...rest,
     })
 
+    const handleChangeCurrentPage = (newPage: number) => {
+      dispatch(changeCurrentPage(newPage))
+      window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+
     const handleChangeItemsPerPage = (e: React.ChangeEvent<HTMLSelectElement>) => {
-      setItemsPerPage(+e.target.value)
-      changeCurrentPage(1)
+      dispatch(changeCurrentPage(1))
+      dispatch(changeItemsPerPage(+e.target.value))
 
       searchParams.delete('page')
       setSearchParams(searchParams)
@@ -40,7 +46,7 @@ export const Pagination: React.FC<PropsType> = React.memo(
             }`}
           >
             <button
-              onClick={() => changeCurrentPage(currentPage - 1)}
+              onClick={() => handleChangeCurrentPage(currentPage - 1)}
               disabled={pagination[0] === currentPage}
               className={clsx(
                 pagination[0] === currentPage && 'text-gray-400 cursor-default',
@@ -57,7 +63,7 @@ export const Pagination: React.FC<PropsType> = React.memo(
                 to={`${navLink}${page === 1 ? `?${sp}` : `?page=${page}${sp ? `&${sp}` : ''}`}`}
               >
                 <button
-                  onClick={() => changeCurrentPage(page)}
+                  onClick={() => handleChangeCurrentPage(page)}
                   disabled={page === currentPage}
                   className={clsx(
                     page === currentPage
@@ -79,7 +85,7 @@ export const Pagination: React.FC<PropsType> = React.memo(
             }`}
           >
             <button
-              onClick={() => changeCurrentPage(currentPage + 1)}
+              onClick={() => handleChangeCurrentPage(currentPage + 1)}
               disabled={pagination[pagination.length - 1] === currentPage}
               className={clsx(
                 pagination[pagination.length - 1] === currentPage && 'text-gray-400 cursor-default',

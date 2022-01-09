@@ -5,9 +5,11 @@ import { useAppSelector } from 'hooks/useAppSelector'
 import React from 'react'
 import {
   clearCartProducts,
+} from 'store/slices/cart/slice'
+import {
   selectAllCartProducts,
-  selectCartTotalProducts,
-} from 'store/slices/cartSlice'
+  selectCartTotalProducts
+} from "store/slices/cart/selectors"
 
 export const CartTotal = () => {
   const dispatch = useAppDispatch()

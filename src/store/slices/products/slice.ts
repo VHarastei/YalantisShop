@@ -1,34 +1,32 @@
-import { RootState } from '../index'
-import { createAsyncThunk, createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { IProduct, IProductsWithPagination, Status } from 'types'
-import { Api, GetProductsPayload } from 'api'
+import { fetchProducts } from './thunks'
 
-const productsAdapter = createEntityAdapter<IProduct>({
+export const productsAdapter = createEntityAdapter<IProduct>({
   selectId: (product) => product.id,
 })
 
 const initialState = productsAdapter.getInitialState({
   pagination: {
     totalItems: 0,
-    page: 0,
-    perPage: 0,
+    page: Number(new URLSearchParams(window.location.search).get('page')) || 1,
+    perPage: 25,
   },
   status: Status.NEVER,
   error: null as null | string,
 })
 
-export const fetchProducts = createAsyncThunk<IProductsWithPagination, GetProductsPayload>(
-  'products/fetchProducts',
-  async (payload) => {
-    const products = await Api.getProducts(payload)
-    return products
-  }
-)
-
 export const productsSlice = createSlice({
   name: 'products',
   initialState,
-  reducers: {},
+  reducers: {
+    changeCurrentPage: (state, action: PayloadAction<number>) => {
+      state.pagination.page = action.payload
+    },
+    changeItemsPerPage: (state, action: PayloadAction<number>) => {
+      state.pagination.perPage = action.payload
+    },
+  },
   extraReducers: (builder) =>
     builder
       .addCase(
@@ -55,12 +53,4 @@ export const productsSlice = createSlice({
 
 export default productsSlice.reducer
 
-export const {
-  selectAll: selectAllProducts,
-  selectById: selectProductById,
-  selectIds: selectProductIds,
-} = productsAdapter.getSelectors<RootState>((state) => state.products)
-
-export const selectProductsPagination = (state: RootState) => state.products.pagination
-export const selectProductsError = (state: RootState) => state.products.error
-export const selectProductsStatus = (state: RootState) => state.products.status
+export const { changeCurrentPage, changeItemsPerPage } = productsSlice.actions

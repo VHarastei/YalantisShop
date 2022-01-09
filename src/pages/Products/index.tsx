@@ -5,14 +5,14 @@ import { useAppDispatch } from 'hooks/useAppDispatch'
 import { useAppSelector } from 'hooks/useAppSelector'
 import { useOriginFilter } from 'hooks/useOriginFilter'
 import { usePriceFilter } from 'hooks/usePriceFilter'
-import React, { useCallback, useEffect, useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import React, { useEffect } from 'react'
 import {
-  fetchProducts,
   selectProductIds,
   selectProductsPagination,
   selectProductsStatus,
-} from 'store/slices/productsSlice'
+} from 'store/slices/products/selectors'
+import { changeCurrentPage } from 'store/slices/products/slice'
+import { fetchProducts } from 'store/slices/products/thunks'
 import { Status } from 'types'
 import { OriginSelect } from './components/OriginSelect'
 import { Pagination } from './components/Pagination'
@@ -21,31 +21,29 @@ import { ProductCardPreloader } from './components/ProductCardPreloader'
 
 export const Products = () => {
   const dispatch = useAppDispatch()
-  const [searchParams] = useSearchParams()
 
-  const [currentPage, setCurrentPage] = useState<number>(Number(searchParams.get('page')) || 1)
-  const [itemsPerPage, setItemsPerPage] = useState(25)
+  const {
+    page: currentPage,
+    perPage: itemsPerPage,
+    totalItems: numberOfItems,
+  } = useAppSelector(selectProductsPagination)
 
-  const { origins, handleChangeOrigin } = useOriginFilter(() => changeCurrentPage(1))
-  const { minPrice, maxPrice, ...priceFilter } = usePriceFilter(() => changeCurrentPage(1))
+  const { origins, handleChangeOrigin } = useOriginFilter(() => dispatch(changeCurrentPage(1)))
+  const { minPrice, maxPrice, ...priceFilter } = usePriceFilter(() =>
+    dispatch(changeCurrentPage(1))
+  )
 
   const productIds = useAppSelector(selectProductIds)
   const status = useAppSelector(selectProductsStatus)
-  const pagination = useAppSelector(selectProductsPagination)
-
-  const changeCurrentPage = useCallback((newPage: number) => {
-    setCurrentPage(newPage)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }, [])
 
   useEffect(() => {
     dispatch(
       fetchProducts({
         page: currentPage,
         perPage: itemsPerPage,
-        origins,
-        minPrice,
-        maxPrice,
+        origins: origins.join(','),
+        minPrice: minPrice || undefined,
+        maxPrice: maxPrice || undefined,
       })
     )
     // eslint-disable-next-line
@@ -57,7 +55,7 @@ export const Products = () => {
       fetchProducts({
         page: currentPage,
         perPage: itemsPerPage,
-        origins,
+        origins: origins.join(','),
         minPrice,
         maxPrice,
       })
@@ -106,11 +104,9 @@ export const Products = () => {
         productIds.length ? (
           <Pagination
             currentPage={currentPage}
-            numberOfItems={pagination.totalItems}
-            numberOfButtons={5}
-            changeCurrentPage={changeCurrentPage}
             itemsPerPage={itemsPerPage}
-            setItemsPerPage={setItemsPerPage}
+            numberOfItems={numberOfItems}
+            numberOfButtons={5}
           />
         ) : (
           <h1 className="mt-8 text-3xl font-semibold text-center">

@@ -6,8 +6,8 @@ import { useAppDispatch } from 'hooks/useAppDispatch'
 import { useAppSelector } from 'hooks/useAppSelector'
 import React, { memo } from 'react'
 import { Link } from 'react-router-dom'
-import { addCartProduct } from 'store/slices/cartSlice'
-import { selectProductById } from 'store/slices/productsSlice'
+import { addCartProduct } from 'store/slices/cart/slice'
+import { selectProductById } from 'store/slices/products/selectors'
 import { ProductCardPreloader } from './ProductCardPreloader'
 
 export const ProductCard: React.FC<{ productId: EntityId }> = memo(({ productId }) => {

@@ -1,7 +1,7 @@
 import { Paper } from 'components/Paper'
 import { useAppSelector } from 'hooks/useAppSelector'
 import React from 'react'
-import { selectCartProductIds } from 'store/slices/cartSlice'
+import { selectCartProductIds } from "store/slices/cart/selectors"
 import { CartProductCard } from './component/CartProductCard'
 import { CartTotal } from './component/CartTotal'
 

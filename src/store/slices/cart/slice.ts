@@ -1,9 +1,8 @@
 import { createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { IProduct, IProductWithQuantity } from 'types'
 import { loadState } from 'utils/loadState'
-import { RootState } from '../index'
 
-const cartAdapter = createEntityAdapter<IProductWithQuantity>({
+export const cartAdapter = createEntityAdapter<IProductWithQuantity>({
   selectId: (product) => product.id,
 })
 
@@ -57,11 +56,3 @@ export default cartSlice.reducer
 
 export const { addCartProduct, removeCartProduct, deleteCartProduct, clearCartProducts } =
   cartSlice.actions
-
-export const {
-  selectAll: selectAllCartProducts,
-  selectById: selectCartProductById,
-  selectIds: selectCartProductIds,
-} = cartAdapter.getSelectors<RootState>((state) => state.cart)
-
-export const selectCartTotalProducts = (state: RootState) => state.cart.totalProducts

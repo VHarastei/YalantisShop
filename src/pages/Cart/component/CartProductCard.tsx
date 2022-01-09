@@ -10,8 +10,8 @@ import {
   addCartProduct,
   deleteCartProduct,
   removeCartProduct,
-  selectCartProductById,
-} from 'store/slices/cartSlice'
+} from 'store/slices/cart/slice'
+import { selectCartProductById } from "store/slices/cart/selectors"
 
 export const CartProductCard: React.FC<{ productId: EntityId }> = memo(({ productId }) => {
   const dispatch = useAppDispatch()

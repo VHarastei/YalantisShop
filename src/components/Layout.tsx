@@ -2,7 +2,7 @@ import React from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import cartIcon from 'assets/cart.svg'
 import clsx from 'clsx'
-import { selectCartTotalProducts } from 'store/slices/cartSlice'
+import { selectCartTotalProducts } from "store/slices/cart/selectors"
 import { useAppSelector } from 'hooks/useAppSelector'
 
 export const Layout: React.FC = ({ children }) => {

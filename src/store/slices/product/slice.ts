@@ -1,8 +1,6 @@
-import { selectProductById } from 'store/slices/productsSlice'
-import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { Api } from 'api'
+import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { IProduct, Status } from 'types'
-import { RootState } from '../index'
+import { fetchProduct } from './thunks'
 
 type ProductSliceState = {
   data: IProduct | undefined
@@ -15,14 +13,6 @@ const initialState: ProductSliceState = {
   status: Status.NEVER,
   error: null,
 }
-
-export const fetchProduct = createAsyncThunk<IProduct, string>(
-  'product/fetchProduct',
-  async (productId) => {
-    const product = await Api.getProduct(productId)
-    return product
-  }
-)
 
 export const productSlice = createSlice({
   name: 'product',
@@ -47,11 +37,3 @@ export const productSlice = createSlice({
 })
 
 export default productSlice.reducer
-
-export const selectProduct = (state: RootState, productId: string) => {
-  let product = selectProductById(state, productId)
-  if (!product) product = state.product.data
-  return product
-}
-export const selectProductError = (state: RootState) => state.product.error
-export const selectProductStatus = (state: RootState) => state.product.status

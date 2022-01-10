@@ -1,14 +1,12 @@
-import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import { MultiValue } from 'react-select'
+import { changeProductsCurrentPage, changeProductsOriginFilter } from 'store/slices/products/slice'
 import { Origin } from 'types'
+import { useAppDispatch } from './useAppDispatch'
 
-export const useOriginFilter = (callback: () => void) => {
+export const useOriginFilter = () => {
+  const dispatch = useAppDispatch()
   const [searchParams, setSearchParams] = useSearchParams()
-
-  const [origins, setOrigins] = useState<Origin[]>(
-    (searchParams.get('origins')?.split(',') as Origin[]) || []
-  )
 
   const handleChangeOrigin = (options: MultiValue<{ value: string; label: string }>) => {
     const newOrigins = options.map((o) => o.value as Origin)
@@ -20,9 +18,10 @@ export const useOriginFilter = (callback: () => void) => {
       searchParams.append('origins', newOrigins.join(','))
     }
     setSearchParams(searchParams)
-    setOrigins(newOrigins)
-    callback()
+
+    dispatch(changeProductsOriginFilter(newOrigins))
+    dispatch(changeProductsCurrentPage(1))
   }
 
-  return { origins, handleChangeOrigin }
+  return { handleChangeOrigin }
 }

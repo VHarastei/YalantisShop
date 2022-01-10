@@ -3,7 +3,7 @@ import { useAppDispatch } from 'hooks/useAppDispatch'
 import { useGetSearchParams } from 'hooks/useGetSearchParams'
 import React from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { changeCurrentPage, changeItemsPerPage } from 'store/slices/products/slice'
+import { changeProductsCurrentPage, changeProductsItemsPerPage } from 'store/slices/products/slice'
 import { IPagination } from 'types'
 import { createPagination } from 'utils/createPagination'
 
@@ -25,13 +25,13 @@ export const Pagination: React.FC<PropsType> = React.memo(
     })
 
     const handleChangeCurrentPage = (newPage: number) => {
-      dispatch(changeCurrentPage(newPage))
+      dispatch(changeProductsCurrentPage(newPage))
       window.scrollTo({ top: 0, behavior: 'smooth' })
     }
 
     const handleChangeItemsPerPage = (e: React.ChangeEvent<HTMLSelectElement>) => {
-      dispatch(changeCurrentPage(1))
-      dispatch(changeItemsPerPage(+e.target.value))
+      dispatch(changeProductsCurrentPage(1))
+      dispatch(changeProductsItemsPerPage(+e.target.value))
 
       searchParams.delete('page')
       setSearchParams(searchParams)

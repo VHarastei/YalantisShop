@@ -1,6 +1,7 @@
 import { createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit'
-import { IProduct, IProductsWithPagination, Status } from 'types'
+import { IProduct, IProductsWithPagination, Origin, Status } from 'types'
 import { fetchProducts } from './thunks'
+const query = new URLSearchParams(window.location.search)
 
 export const productsAdapter = createEntityAdapter<IProduct>({
   selectId: (product) => product.id,
@@ -9,8 +10,13 @@ export const productsAdapter = createEntityAdapter<IProduct>({
 const initialState = productsAdapter.getInitialState({
   pagination: {
     totalItems: 0,
-    page: Number(new URLSearchParams(window.location.search).get('page')) || 1,
+    page: Number(query.get('page')) || 1,
     perPage: 25,
+  },
+  filters: {
+    origins: (query.get('origins')?.split(',') || []) as Origin[],
+    minPrice: Number(query.get('min')) || 0,
+    maxPrice: Number(query.get('max')) || 0,
   },
   status: Status.NEVER,
   error: null as null | string,
@@ -20,11 +26,25 @@ export const productsSlice = createSlice({
   name: 'products',
   initialState,
   reducers: {
-    changeCurrentPage: (state, action: PayloadAction<number>) => {
+    changeProductsCurrentPage: (state, action: PayloadAction<number>) => {
       state.pagination.page = action.payload
     },
-    changeItemsPerPage: (state, action: PayloadAction<number>) => {
+    changeProductsItemsPerPage: (state, action: PayloadAction<number>) => {
       state.pagination.perPage = action.payload
+    },
+    changeProductsOriginFilter: (state, action: PayloadAction<Origin[]>) => {
+      state.filters.origins = action.payload
+    },
+    changeProductsMinPriceFilter: (state, action: PayloadAction<number>) => {
+      state.filters.minPrice = action.payload
+    },
+    changeProductsMaxPriceFilter: (state, action: PayloadAction<number>) => {
+      state.filters.maxPrice = action.payload
+    },
+    clearProductsFilters: (state) => {
+      state.filters.origins = []
+      state.filters.minPrice = 0
+      state.filters.maxPrice = 0
     },
   },
   extraReducers: (builder) =>
@@ -53,4 +73,11 @@ export const productsSlice = createSlice({
 
 export default productsSlice.reducer
 
-export const { changeCurrentPage, changeItemsPerPage } = productsSlice.actions
+export const {
+  changeProductsCurrentPage,
+  changeProductsItemsPerPage,
+  changeProductsOriginFilter,
+  changeProductsMinPriceFilter,
+  changeProductsMaxPriceFilter,
+  clearProductsFilters,
+} = productsSlice.actions

@@ -1,11 +1,22 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import {
+  changeProductsMaxPriceFilter,
+  changeProductsMinPriceFilter,
+} from 'store/slices/products/slice'
+import { useAppDispatch } from './useAppDispatch'
 
-export const usePriceFilter = (callback: () => void) => {
+export const usePriceFilter = (min: number, max: number) => {
+  const dispatch = useAppDispatch()
   const [searchParams, setSearchParams] = useSearchParams()
 
-  const [minPrice, setMinPrice] = useState<number>(Number(searchParams.get('min')) || 0)
-  const [maxPrice, setMaxPrice] = useState<number>(Number(searchParams.get('max')) || 0)
+  const [minPrice, setMinPrice] = useState<number>(min)
+  const [maxPrice, setMaxPrice] = useState<number>(max)
+
+  useEffect(() => {
+    setMinPrice(min)
+    setMaxPrice(max)
+  }, [min, max])
 
   const changePrice = (cb: (value: number) => void) => {
     return (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -21,32 +32,27 @@ export const usePriceFilter = (callback: () => void) => {
   const handleChangeMaxPrice = changePrice((val) => setMaxPrice(val))
 
   const validateMinPrice = () => {
-    if (minPrice > maxPrice && maxPrice !== 0) {
-      setMinPrice(maxPrice)
-    }
-  }
+    dispatch(changeProductsMinPriceFilter(minPrice))
 
-  const validateMaxPrice = () => {
-    if (minPrice > maxPrice && minPrice !== 0) {
-      setMaxPrice(minPrice)
-    }
-  }
-
-  const applyPriceFilters = () => {
     searchParams.delete('min')
-    searchParams.delete('max')
     searchParams.delete('page')
 
     if (minPrice > 0) {
       searchParams.append('min', minPrice.toString())
     }
+    setSearchParams(searchParams)
+  }
+
+  const validateMaxPrice = () => {
+    dispatch(changeProductsMaxPriceFilter(maxPrice))
+
+    searchParams.delete('min')
+    searchParams.delete('page')
 
     if (maxPrice > 0) {
       searchParams.append('max', maxPrice.toString())
     }
-
     setSearchParams(searchParams)
-    callback()
   }
 
   return {
@@ -56,6 +62,5 @@ export const usePriceFilter = (callback: () => void) => {
     handleChangeMaxPrice,
     validateMinPrice,
     validateMaxPrice,
-    applyPriceFilters,
   }
 }

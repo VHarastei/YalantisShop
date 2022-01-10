@@ -10,7 +10,7 @@ const data = [
 ]
 
 type PropsType = {
-  defaultValue?: Origin[]
+  value?: Origin[]
   onChange: (
     options: MultiValue<{
       value: string
@@ -19,9 +19,9 @@ type PropsType = {
   ) => void
 }
 
-export const OriginSelect: React.FC<PropsType> = ({ defaultValue = [], onChange }) => {
-  const defValue: typeof data = data.filter((item) =>
-    defaultValue.includes(item.value as Origin) ? item : false
+export const OriginSelect: React.FC<PropsType> = ({ value = [], onChange }) => {
+  const parsedValue: typeof data = data.filter((item) =>
+    value.includes(item.value as Origin) ? item : false
   )
 
   return (
@@ -30,8 +30,9 @@ export const OriginSelect: React.FC<PropsType> = ({ defaultValue = [], onChange 
       name="origin"
       options={data}
       classNamePrefix="select"
-      defaultValue={defValue}
+      value={parsedValue}
       onChange={onChange}
+      isClearable={true}
       theme={(theme) => ({
         ...theme,
         borderRadius: 6,

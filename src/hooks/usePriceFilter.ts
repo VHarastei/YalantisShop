@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import {
+  changeProductsCurrentPage,
   changeProductsMaxPriceFilter,
   changeProductsMinPriceFilter,
 } from 'store/slices/products/slice'
@@ -33,6 +34,7 @@ export const usePriceFilter = (min: number, max: number) => {
 
   const validateMinPrice = () => {
     dispatch(changeProductsMinPriceFilter(minPrice))
+    dispatch(changeProductsCurrentPage(1))
 
     searchParams.delete('min')
     searchParams.delete('page')
@@ -45,8 +47,9 @@ export const usePriceFilter = (min: number, max: number) => {
 
   const validateMaxPrice = () => {
     dispatch(changeProductsMaxPriceFilter(maxPrice))
+    dispatch(changeProductsCurrentPage(1))
 
-    searchParams.delete('min')
+    searchParams.delete('max')
     searchParams.delete('page')
 
     if (maxPrice > 0) {

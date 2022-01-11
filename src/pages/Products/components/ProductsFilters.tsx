@@ -5,7 +5,7 @@ import { useOriginFilter } from 'hooks/useOriginFilter'
 import { usePriceFilter } from 'hooks/usePriceFilter'
 import React from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { clearProductsFilters } from 'store/slices/products/slice'
+import { changeProductsCurrentPage, clearProductsFilters } from 'store/slices/products/slice'
 import { Origin } from 'types'
 import { OriginSelect } from './OriginSelect'
 
@@ -25,6 +25,7 @@ export const ProductsFilters: React.FC<PropsType> = (filters) => {
   const handleClearAllFilters = () => {
     setSearchParams({})
     dispatch(clearProductsFilters())
+    dispatch(changeProductsCurrentPage(1))
   }
 
   return (

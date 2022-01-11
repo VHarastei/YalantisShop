@@ -1,13 +1,15 @@
 import { ErrorCard } from 'components/ErrorCard'
 import { useAppDispatch } from 'hooks/useAppDispatch'
 import { useAppSelector } from 'hooks/useAppSelector'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import {
   selectProductIds,
   selectProductsFilters,
   selectProductsPagination,
   selectProductsStatus,
 } from 'store/slices/products/selectors'
+import { parseProductsSearchParams } from 'store/slices/products/slice'
 import { fetchProducts } from 'store/slices/products/thunks'
 import { Status } from 'types'
 import { Pagination } from './components/Pagination'
@@ -17,6 +19,9 @@ import { ProductsFilters } from './components/ProductsFilters'
 
 export const Products = () => {
   const dispatch = useAppDispatch()
+  const [searchParams] = useSearchParams()
+
+  const [isSearchParamsParsed, setIsSearchParamsParsed] = useState(false)
 
   const {
     page: currentPage,
@@ -29,16 +34,31 @@ export const Products = () => {
   const status = useAppSelector(selectProductsStatus)
 
   useEffect(() => {
-    dispatch(
-      fetchProducts({
-        page: currentPage,
-        perPage: itemsPerPage,
-        origins: filters.origins.join(','),
-        minPrice: filters.minPrice || undefined,
-        maxPrice: filters.maxPrice || undefined,
-      })
-    )
-  }, [currentPage, itemsPerPage, filters.origins, filters.minPrice, filters.maxPrice, dispatch])
+    dispatch(parseProductsSearchParams(Array.from(searchParams.entries())))
+    setIsSearchParamsParsed(true)
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch])
+
+  useEffect(() => {
+    if (isSearchParamsParsed)
+      dispatch(
+        fetchProducts({
+          page: currentPage,
+          perPage: itemsPerPage,
+          origins: filters.origins.join(','),
+          minPrice: filters.minPrice || undefined,
+          maxPrice: filters.maxPrice || undefined,
+        })
+      )
+  }, [
+    currentPage,
+    itemsPerPage,
+    filters.origins,
+    filters.minPrice,
+    filters.maxPrice,
+    isSearchParamsParsed,
+    dispatch,
+  ])
 
   if (status === Status.ERROR) return <ErrorCard />
 

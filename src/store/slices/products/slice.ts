@@ -1,7 +1,6 @@
 import { createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { IProduct, IProductsWithPagination, Origin, Status } from 'types'
 import { fetchProducts } from './thunks'
-const query = new URLSearchParams(window.location.search)
 
 export const productsAdapter = createEntityAdapter<IProduct>({
   selectId: (product) => product.id,
@@ -10,13 +9,13 @@ export const productsAdapter = createEntityAdapter<IProduct>({
 const initialState = productsAdapter.getInitialState({
   pagination: {
     totalItems: 0,
-    page: Number(query.get('page')) || 1,
+    page: 1,
     perPage: 25,
   },
   filters: {
-    origins: (query.get('origins')?.split(',') || []) as Origin[],
-    minPrice: Number(query.get('min')) || 0,
-    maxPrice: Number(query.get('max')) || 0,
+    origins: [] as Origin[],
+    minPrice: 0,
+    maxPrice: 0,
   },
   status: Status.NEVER,
   error: null as null | string,
@@ -45,6 +44,24 @@ export const productsSlice = createSlice({
       state.filters.origins = []
       state.filters.minPrice = 0
       state.filters.maxPrice = 0
+    },
+    parseProductsSearchParams: (state, action: PayloadAction<[string, string][]>) => {
+      for (let pair of action.payload) {
+        switch (pair[0]) {
+          case 'page':
+            state.pagination.page = Number(pair[1])
+            break
+          case 'min':
+            state.filters.minPrice = Number(pair[1])
+            break
+          case 'max':
+            state.filters.maxPrice = Number(pair[1])
+            break
+          case 'origins':
+            state.filters.origins = pair[1]?.split(',') as Origin[]
+            break
+        }
+      }
     },
   },
   extraReducers: (builder) =>
@@ -79,5 +96,6 @@ export const {
   changeProductsOriginFilter,
   changeProductsMinPriceFilter,
   changeProductsMaxPriceFilter,
+  parseProductsSearchParams,
   clearProductsFilters,
 } = productsSlice.actions

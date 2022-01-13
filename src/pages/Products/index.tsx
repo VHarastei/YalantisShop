@@ -1,56 +1,92 @@
-import { Api } from 'api'
 import { ErrorCard } from 'components/ErrorCard'
-import { useQuery } from 'hooks/useQuery'
-import React, { useCallback, useEffect, useState } from 'react'
-import { IProductsWithPagination } from 'types'
+import { useAppDispatch } from 'hooks/useAppDispatch'
+import { useAppSelector } from 'hooks/useAppSelector'
+import React, { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import {
+  selectProductIds,
+  selectProductsFilters,
+  selectProductsPagination,
+  selectProductsStatus,
+} from 'store/slices/products/selectors'
+import { parseProductsSearchParams } from 'store/slices/products/slice'
+import { fetchProducts } from 'store/slices/products/thunks'
+import { Status } from 'types'
 import { Pagination } from './components/Pagination'
 import { ProductCard } from './components/ProductCard'
 import { ProductCardPreloader } from './components/ProductCardPreloader'
+import { ProductsFilters } from './components/ProductsFilters'
 
 export const Products = () => {
-  const query = useQuery()
+  const dispatch = useAppDispatch()
+  const [searchParams] = useSearchParams()
 
-  const [currentPage, setCurrentPage] = useState<number>(Number(query.get('page')) || 1)
-  const [isError, setIsError] = useState(false)
-  const [products, setProducts] = useState<IProductsWithPagination | null>(null)
+  const [isSearchParamsParsed, setIsSearchParamsParsed] = useState(false)
 
-  const changeCurrentPage = useCallback((newPage: number) => {
-    setCurrentPage(newPage)
-    window.scrollTo({ top: 0, behavior: 'smooth' })
-  }, [])
+  const {
+    page: currentPage,
+    perPage: itemsPerPage,
+    totalItems: numberOfItems,
+  } = useAppSelector(selectProductsPagination)
+  const filters = useAppSelector(selectProductsFilters)
 
-  const getProducts = useCallback(async () => {
-    try {
-      const res = await Api.getProducts({ page: currentPage, perPage: 20 })
-      setProducts(res)
-    } catch (err) {
-      setIsError(true)
-    }
-  }, [currentPage])
+  const productIds = useAppSelector(selectProductIds)
+  const status = useAppSelector(selectProductsStatus)
 
   useEffect(() => {
-    getProducts()
-  }, [getProducts])
+    dispatch(parseProductsSearchParams(Array.from(searchParams.entries())))
+    setIsSearchParamsParsed(true)
+    //eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [dispatch])
 
-  if (isError) return <ErrorCard />
+  useEffect(() => {
+    if (isSearchParamsParsed)
+      dispatch(
+        fetchProducts({
+          page: currentPage,
+          perPage: itemsPerPage,
+          origins: filters.origins.join(','),
+          minPrice: filters.minPrice || undefined,
+          maxPrice: filters.maxPrice || undefined,
+        })
+      )
+  }, [
+    currentPage,
+    itemsPerPage,
+    filters.origins,
+    filters.minPrice,
+    filters.maxPrice,
+    isSearchParamsParsed,
+    dispatch,
+  ])
+
+  if (status === Status.ERROR) return <ErrorCard />
 
   return (
     <div className="mb-4">
       <h1 className="mb-4 text-4xl font-bold text-center text-green-500">List of Products</h1>
+      <ProductsFilters {...filters} />
+
       <ul className="flex flex-wrap gap-4 justify-center">
-        {products
-          ? products.items.map((prod) => <ProductCard {...prod} key={prod.id} />)
-          : [...Array(20)].map((_, i) => <ProductCardPreloader key={i} />)}
+        {status === Status.SUCCESS
+          ? productIds.map((id) => <ProductCard productId={id} key={id} />)
+          : [...Array(itemsPerPage)].map((_, i) => <ProductCardPreloader key={i} />)}
       </ul>
-      {products && (
-        <Pagination
-          currentPage={currentPage}
-          itemsPerPage={products.perPage}
-          numberOfItems={products.totalItems}
-          numberOfButtons={5}
-          changeCurrentPage={changeCurrentPage}
-        />
-      )}
+
+      {status === Status.SUCCESS ? (
+        productIds.length ? (
+          <Pagination
+            currentPage={currentPage}
+            itemsPerPage={itemsPerPage}
+            numberOfItems={numberOfItems}
+            numberOfButtons={5}
+          />
+        ) : (
+          <h1 className="mt-8 text-3xl font-semibold text-center">
+            No products matching your filters were found!
+          </h1>
+        )
+      ) : null}
     </div>
   )
 }

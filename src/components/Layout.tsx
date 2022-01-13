@@ -1,11 +1,12 @@
 import React from 'react'
 import { Link, NavLink } from 'react-router-dom'
 import cartIcon from 'assets/cart.svg'
-import { useCartState } from 'state'
 import clsx from 'clsx'
+import { selectCartTotalProducts } from "store/slices/cart/selectors"
+import { useAppSelector } from 'hooks/useAppSelector'
 
 export const Layout: React.FC = ({ children }) => {
-  const { totalProducts } = useCartState()
+  const totalProducts = useAppSelector((state) => selectCartTotalProducts(state))
 
   return (
     <div className="flex flex-col h-full min-h-screen tracking-normal leading-normal bg-gray-200">

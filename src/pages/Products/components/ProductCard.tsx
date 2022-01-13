@@ -1,16 +1,23 @@
-import React from 'react'
-import { IProduct } from 'types'
-import originIcon from 'assets/origin.svg'
+import { EntityId } from '@reduxjs/toolkit'
 import editIcon from 'assets/edit.svg'
-import { Link } from 'react-router-dom'
+import originIcon from 'assets/origin.svg'
 import { Button } from 'components/Button'
-import { useCartDispatch } from 'state'
+import { useAppDispatch } from 'hooks/useAppDispatch'
+import { useAppSelector } from 'hooks/useAppSelector'
+import React, { memo } from 'react'
+import { Link } from 'react-router-dom'
+import { addCartProduct } from 'store/slices/cart/slice'
+import { selectProductById } from 'store/slices/products/selectors'
+import { ProductCardPreloader } from './ProductCardPreloader'
 
-export const ProductCard: React.FC<IProduct> = ({ children, ...product }) => {
-  const dispatch = useCartDispatch()
+export const ProductCard: React.FC<{ productId: EntityId }> = memo(({ productId }) => {
+  const dispatch = useAppDispatch()
+  const product = useAppSelector((state) => selectProductById(state, productId))
+
+  if (!product) return <ProductCardPreloader />
 
   const hadleAddProduct = () => {
-    dispatch({ type: 'ADD_PRODUCT', payload: product })
+    dispatch(addCartProduct(product))
   }
 
   return (
@@ -51,4 +58,4 @@ export const ProductCard: React.FC<IProduct> = ({ children, ...product }) => {
       </Button>
     </li>
   )
-}
+})

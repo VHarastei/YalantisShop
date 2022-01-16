@@ -1,9 +1,11 @@
 import axios from 'axios'
-import { IProduct, IProductsWithPagination } from 'types'
+import { ICreateProduct, IProduct, IProductsWithPagination } from 'types'
 
 const instance = axios.create({
   baseURL: 'https://yalantis-react-school-api.yalantis.com/api/v1/',
+  headers: { Authorization: process.env.REACT_APP_API_KEY as string },
 })
+
 export type GetProductsPayload = {
   page?: number
   perPage?: number
@@ -18,4 +20,7 @@ export const Api = {
 
   getProduct: (productId: string): Promise<IProduct> =>
     instance.get(`products/${productId}`).then(({ data }) => data),
+
+  createProduct: (payload: ICreateProduct): Promise<IProduct> =>
+    instance.post('products', payload).then(({ data }) => data),
 }

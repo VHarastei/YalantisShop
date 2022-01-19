@@ -8,14 +8,6 @@ export interface IProduct {
   updatedAt: string
 }
 
-export interface ICreateProduct {
-  product: {
-    name: string
-    price: number
-    origin: Origin
-  }
-}
-
 export type Origin = 'europe' | 'usa' | 'africa' | 'asia'
 
 export interface IProductWithQuantity extends IProduct {

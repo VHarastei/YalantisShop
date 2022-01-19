@@ -1,5 +1,6 @@
+import { Origin } from './../types'
 import axios from 'axios'
-import { ICreateProduct, IProduct, IProductsWithPagination } from 'types'
+import { IProduct, IProductsWithPagination } from 'types'
 
 const instance = axios.create({
   baseURL: 'https://yalantis-react-school-api.yalantis.com/api/v1/',
@@ -12,6 +13,20 @@ export type GetProductsPayload = {
   origins?: string
   minPrice?: number
   maxPrice?: number
+  editable?: boolean
+}
+
+export type CreateProductPayload = {
+  product: {
+    name: string
+    price: number
+    origin: Origin
+  }
+}
+
+export type UpdateProductPayload = {
+  productId: string
+  payload: CreateProductPayload
 }
 
 export const Api = {
@@ -21,6 +36,9 @@ export const Api = {
   getProduct: (productId: string): Promise<IProduct> =>
     instance.get(`products/${productId}`).then(({ data }) => data),
 
-  createProduct: (payload: ICreateProduct): Promise<IProduct> =>
+  createProduct: (payload: CreateProductPayload): Promise<IProduct> =>
     instance.post('products', payload).then(({ data }) => data),
+
+  updateProduct: ({ productId, payload }: UpdateProductPayload): Promise<IProduct> =>
+    instance.patch(`products/${productId}`, payload).then(({ data }) => data),
 }

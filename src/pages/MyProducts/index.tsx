@@ -1,6 +1,9 @@
 import { ErrorCard } from 'components/ErrorCard'
 import { useAppDispatch } from 'hooks/useAppDispatch'
 import { useAppSelector } from 'hooks/useAppSelector'
+import { Pagination } from 'pages/Products/components/Pagination'
+import { ProductCardPreloader } from 'pages/Products/components/ProductCardPreloader'
+import { ProductsFilters } from 'pages/Products/components/ProductsFilters'
 import React, { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import {
@@ -12,12 +15,9 @@ import {
 import { parseProductsSearchParams, resetProductsState } from 'store/slices/products/slice'
 import { fetchProducts } from 'store/slices/products/thunks'
 import { Status } from 'types'
-import { Pagination } from './components/Pagination'
-import { ProductCard } from './components/ProductCard'
-import { ProductCardPreloader } from './components/ProductCardPreloader'
-import { ProductsFilters } from './components/ProductsFilters'
+import { MyProductCard } from './components/MyProductCard'
 
-export const Products = () => {
+export const MyProducts = () => {
   const dispatch = useAppDispatch()
   const [searchParams] = useSearchParams()
 
@@ -52,6 +52,7 @@ export const Products = () => {
           origins: origins.join(','),
           minPrice: minPrice || undefined,
           maxPrice: maxPrice || undefined,
+          editable: true,
         })
       )
   }, [currentPage, itemsPerPage, origins, minPrice, maxPrice, isSearchParamsParsed, dispatch])
@@ -60,13 +61,15 @@ export const Products = () => {
 
   return (
     <div className="mb-4">
-      <h1 className="mb-4 text-4xl font-bold text-center text-green-500">List of Products</h1>
+      <h1 className="mb-4 text-4xl font-bold text-center text-green-500">List of My Products</h1>
       <ProductsFilters origins={origins} minPrice={minPrice} maxPrice={maxPrice} />
 
       <ul className="flex flex-wrap gap-4 justify-center">
         {status === Status.SUCCESS
-          ? productIds.map((id) => <ProductCard productId={id} key={id} />)
-          : [...Array(itemsPerPage)].map((_, i) => <ProductCardPreloader key={i} />)}
+          ? productIds.map((id) => <MyProductCard productId={id} key={id} />)
+          : [...Array(itemsPerPage)].map((_, i) => (
+              <ProductCardPreloader isMyProduct={true} key={i} />
+            ))}
       </ul>
 
       {status === Status.SUCCESS ? (

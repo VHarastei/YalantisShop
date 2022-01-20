@@ -1,23 +1,26 @@
+import { CreateOrderPayload } from 'api'
 import { Button } from 'components/Button'
 import { Paper } from 'components/Paper'
 import { useAppDispatch } from 'hooks/useAppDispatch'
 import { useAppSelector } from 'hooks/useAppSelector'
 import React from 'react'
-import {
-  clearCartProducts,
-} from 'store/slices/cart/slice'
-import {
-  selectAllCartProducts,
-  selectCartTotalProducts
-} from "store/slices/cart/selectors"
+import { selectAllCartProducts, selectCartTotalProducts } from 'store/slices/cart/selectors'
+import { fetchCreateOrder } from 'store/slices/orders/thunks'
 
 export const CartTotal = () => {
   const dispatch = useAppDispatch()
   const totalProducts = useAppSelector((state) => selectCartTotalProducts(state))
   const products = useAppSelector((state) => selectAllCartProducts(state))
 
-  const handleClearProducts = () => {
-    dispatch(clearCartProducts())
+  const handleCreateOrder = () => {
+    const payload: CreateOrderPayload = {
+      order: {
+        pieces: products.map((p) => ({ productId: p.id, count: p.quantity })),
+      },
+    }
+
+    console.log(payload)
+    dispatch(fetchCreateOrder(payload))
   }
 
   return (
@@ -30,8 +33,8 @@ export const CartTotal = () => {
             {`${products.reduce((acc, curr) => acc + curr.price * curr.quantity, 0)}$`}
           </span>
         </div>
-        <Button onClick={handleClearProducts} fullWidth>
-          Proceed to checkout
+        <Button onClick={handleCreateOrder} fullWidth>
+          Create Order
         </Button>
       </Paper>
     </div>

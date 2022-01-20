@@ -14,6 +14,21 @@ export interface IProductWithQuantity extends IProduct {
   quantity: number
 }
 
+export interface IOrder {
+  id: string
+  pieces: IOrderPiece[]
+  createdAt: string
+}
+
+export interface IOrders {
+  items: IOrder[]
+}
+
+export interface IOrderPiece {
+  productId: string
+  count: number
+}
+
 export interface IProductsWithPagination {
   items: IProduct[]
   totalItems: number

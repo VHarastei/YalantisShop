@@ -21,8 +21,6 @@ const initialState = productsAdapter.getInitialState({
   error: null as null | string,
 })
 
-console.log(initialState)
-
 export const productsSlice = createSlice({
   name: 'products',
   initialState,

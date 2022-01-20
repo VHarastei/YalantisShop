@@ -1,6 +1,7 @@
 import { Layout } from 'components/Layout'
 import { Cart } from 'pages/Cart'
 import { MyProducts } from 'pages/MyProducts'
+import { Orders } from 'pages/Orders'
 import { Product } from 'pages/Product'
 import { Products } from 'pages/Products'
 import React from 'react'
@@ -13,6 +14,7 @@ const App = () => {
         <Route path="/products/:productId" element={<Product />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/my-products" element={<MyProducts />} />
+        <Route path="/orders" element={<Orders />} />
         <Route path="/" element={<Products />} />
       </Routes>
     </Layout>

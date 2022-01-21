@@ -6,3 +6,5 @@ export const {
   selectById: selectOrderById,
   selectIds: selectOrderIds,
 } = ordersAdapter.getSelectors<RootState>((state) => state.orders)
+
+export const selectOrdersStatus = (state: RootState) => state.orders.status

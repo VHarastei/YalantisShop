@@ -3,24 +3,33 @@ import { Button } from 'components/Button'
 import { Paper } from 'components/Paper'
 import { useAppDispatch } from 'hooks/useAppDispatch'
 import { useAppSelector } from 'hooks/useAppSelector'
-import React from 'react'
+import React, { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { selectAllCartProducts, selectCartTotalProducts } from 'store/slices/cart/selectors'
 import { fetchCreateOrder } from 'store/slices/orders/thunks'
 
 export const CartTotal = () => {
   const dispatch = useAppDispatch()
+  const navigate = useNavigate()
+
   const totalProducts = useAppSelector((state) => selectCartTotalProducts(state))
   const products = useAppSelector((state) => selectAllCartProducts(state))
 
-  const handleCreateOrder = () => {
+  const [isError, setIsError] = useState(false)
+
+  const handleCreateOrder = async () => {
     const payload: CreateOrderPayload = {
       order: {
         pieces: products.map((p) => ({ productId: p.id, count: p.quantity })),
       },
     }
 
-    console.log(payload)
-    dispatch(fetchCreateOrder(payload))
+    try {
+      await dispatch(fetchCreateOrder(payload)).unwrap()
+      navigate('/orders')
+    } catch (err) {
+      setIsError(true)
+    }
   }
 
   return (
@@ -33,7 +42,10 @@ export const CartTotal = () => {
             {`${products.reduce((acc, curr) => acc + curr.price * curr.quantity, 0)}$`}
           </span>
         </div>
-        <Button onClick={handleCreateOrder} fullWidth>
+        {isError && (
+          <span className="text-xl font-semibold text-red-500">Something went wrong!</span>
+        )}
+        <Button disabled={!products.length} onClick={handleCreateOrder} fullWidth>
           Create Order
         </Button>
       </Paper>

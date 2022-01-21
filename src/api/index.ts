@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { IOrder, Origin, IProduct, IProductsWithPagination, IOrderPiece, IOrders } from 'types'
+import { IOrder, IOrders, IProduct, IProductsWithPagination, Origin } from 'types'
 
 const instance = axios.create({
   baseURL: 'https://yalantis-react-school-api.yalantis.com/api/v1/',
@@ -30,7 +30,10 @@ export type UpdateProductPayload = {
 
 export type CreateOrderPayload = {
   order: {
-    pieces: IOrderPiece[]
+    pieces: {
+      productId: string
+      count: number
+    }[]
   }
 }
 
@@ -47,8 +50,11 @@ export const Api = {
   updateProduct: ({ productId, payload }: UpdateProductPayload): Promise<IProduct> =>
     instance.patch(`products/${productId}`, payload).then(({ data }) => data),
 
+  getOrders: (): Promise<IOrders> => instance.get('orders').then(({ data }) => data),
+
+  getOrder: (orderId: string): Promise<IOrder> =>
+    instance.get(`orders/${orderId}`).then(({ data }) => data),
+
   createOrder: (payload: CreateOrderPayload): Promise<IOrder> =>
     instance.post('orders', payload).then(({ data }) => data),
-
-  getOrders: (): Promise<IOrders> => instance.get('orders').then(({ data }) => data),
 }

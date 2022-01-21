@@ -16,6 +16,11 @@ export const Header = () => {
           <h2 className="text-3xl font-bold">The Shop</h2>
         </Link>
         <div className="flex gap-4">
+          <Link to="/orders">
+            <button className="text-xl font-medium opacity-80 hover:opacity-100 transition-all">
+              Orders History
+            </button>
+          </Link>
           <Link to="/my-products">
             <button className="text-xl font-medium opacity-80 hover:opacity-100 transition-all">
               My Products

@@ -25,8 +25,9 @@ export interface IOrders {
 }
 
 export interface IOrderPiece {
-  productId: string
+  id: string
   count: number
+  product: IProduct
 }
 
 export interface IProductsWithPagination {

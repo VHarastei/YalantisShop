@@ -1,9 +1,11 @@
-import { DevTool } from '@hookform/devtools'
 import { ErrorMessage } from '@hookform/error-message'
-import { originValues, ReactSelectTheme } from 'pages/Products/components/OriginSelect'
-import React from 'react'
+import { Api } from 'api'
+import { debounce } from 'lodash'
+import { ReactSelectTheme } from 'pages/Products/components/OriginSelect'
+import React, { useMemo } from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
-import Select from 'react-select'
+import AsyncSelect from 'react-select/async'
+import { SelectOptions } from 'types'
 import { Input } from './Input'
 
 type PropsType = UseFormReturn<ProductFormValues, object> & { onSubmit: () => void }
@@ -23,6 +25,14 @@ export const ProductForm: React.FC<PropsType> = ({
   formState: { errors, isSubmitting },
   onSubmit,
 }) => {
+  const loadOptions = useMemo(() => {
+    return debounce(async (_, callback: (options: SelectOptions) => void) => {
+      Api.getProductsOrigins().then((data) => {
+        callback(data.items.map((i) => ({ value: i.value, label: i.displayName })))
+      })
+    }, 300)
+  }, [])
+
   return (
     <form onSubmit={onSubmit}>
       <Input
@@ -48,10 +58,12 @@ export const ProductForm: React.FC<PropsType> = ({
           control={control}
           name="origin"
           render={({ field }) => (
-            <Select
+            <AsyncSelect
               {...field}
+              cacheOptions
+              defaultOptions
+              loadOptions={loadOptions}
               isDisabled={isSubmitting}
-              options={originValues}
               theme={ReactSelectTheme}
             />
           )}
@@ -62,7 +74,6 @@ export const ProductForm: React.FC<PropsType> = ({
           render={({ message }) => <p className="font-medium text-red-500">{message}</p>}
         />
       </div>
-      <DevTool control={control} />
     </form>
   )
 }

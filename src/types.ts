@@ -1,3 +1,5 @@
+import { MultiValue } from 'react-select'
+
 export interface IProduct {
   id: string
   isEditable: boolean
@@ -43,6 +45,15 @@ export interface IPagination {
   currentPage: number
   numberOfButtons: number
 }
+
+export interface IProductsOrigins {
+  items: {
+    value: string
+    displayName: string
+  }[]
+}
+
+export type SelectOptions = MultiValue<{ value: string; label: string }>
 
 export enum Status {
   SUCCESS = 'SUCCESS',

@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { IOrder, IOrders, IProduct, IProductsWithPagination, Origin } from 'types'
+import { IOrder, IOrders, IProduct, IProductsOrigins, IProductsWithPagination, Origin } from 'types'
 
 const instance = axios.create({
   baseURL: 'https://yalantis-react-school-api.yalantis.com/api/v1/',
@@ -49,6 +49,9 @@ export const Api = {
 
   updateProduct: ({ productId, payload }: UpdateProductPayload): Promise<IProduct> =>
     instance.patch(`products/${productId}`, payload).then(({ data }) => data),
+
+  getProductsOrigins: (): Promise<IProductsOrigins> =>
+    instance.get(`products-origins`).then(({ data }) => data),
 
   getOrders: (): Promise<IOrders> => instance.get('orders').then(({ data }) => data),
 

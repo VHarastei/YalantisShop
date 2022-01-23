@@ -1,10 +1,13 @@
-import React from 'react'
-import Select, { MultiValue, Theme } from 'react-select'
-import { Origin } from 'types'
+import { Api } from 'api'
+import { debounce } from 'lodash'
+import React, { useMemo, useState } from 'react'
+import { Theme } from 'react-select'
+import AsyncSelect from 'react-select/async'
+import { Origin, SelectOptions } from 'types'
 
 export const originValues = [
   { value: 'europe', label: 'Europe' },
-  { value: 'usa', label: 'Usa' },
+  { value: 'usa', label: 'USA' },
   { value: 'africa', label: 'Africa' },
   { value: 'asia', label: 'Asia' },
 ]
@@ -23,29 +26,40 @@ export const ReactSelectTheme = (theme: Theme) => ({
 
 type PropsType = {
   value?: Origin[]
-  onChange: (
-    options: MultiValue<{
-      value: string
-      label: string
-    }>
-  ) => void
+  onChange: (options: SelectOptions) => void
 }
 
-export const OriginSelect: React.FC<PropsType> = ({ value = [], onChange }) => {
-  const parsedValue: typeof originValues = originValues.filter((item) =>
-    value.includes(item.value as Origin) ? item : false
-  )
+export const OriginSelect = ({ value = [], onChange }: PropsType) => {
+  const [lastOptions, setLastOptions] = useState<SelectOptions>([])
+
+  const loadOptions = useMemo(() => {
+    return debounce(async (_, callback: (options: SelectOptions) => void) => {
+      const { items } = await Api.getProductsOrigins()
+
+      const options = items.map((i) => ({
+        value: i.value,
+        label: i.displayName,
+      }))
+
+      callback(options)
+      setLastOptions(options)
+
+      return options
+    }, 300)
+  }, [setLastOptions])
 
   return (
-    <Select
-      isMulti
-      name="origin"
-      options={originValues}
-      classNamePrefix="select"
-      value={parsedValue}
-      onChange={onChange}
-      isClearable={true}
-      theme={ReactSelectTheme}
-    />
+    <div>
+      <AsyncSelect
+        isMulti
+        cacheOptions
+        loadOptions={loadOptions}
+        defaultOptions
+        value={lastOptions.filter((option) =>
+          value.includes(option.value as Origin) ? option : false
+        )}
+        onChange={onChange}
+      />
+    </div>
   )
 }

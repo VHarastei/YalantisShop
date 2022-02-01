@@ -1,4 +1,4 @@
-import { CreateOrderPayload } from 'api'
+import { CreateOrderPayload } from 'api/types'
 import { Button } from 'components/Button'
 import { Paper } from 'components/Paper'
 import { useAppDispatch } from 'hooks/useAppDispatch'

@@ -1,7 +1,7 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { Api, CreateProductPayload, GetProductsPayload, UpdateProductPayload } from 'api/index'
-import { IProductsWithPagination } from 'types'
-import { IProduct } from './../../../types'
+import { Api } from 'api/index'
+import { CreateProductPayload, GetProductsPayload, UpdateProductPayload } from 'api/types'
+import { IProduct, IProductsWithPagination } from 'types'
 
 export const fetchProducts = createAsyncThunk<IProductsWithPagination, GetProductsPayload>(
   'products/fetchProducts',

@@ -1,5 +1,6 @@
 import { createAsyncThunk } from '@reduxjs/toolkit'
-import { Api, CreateOrderPayload } from 'api'
+import { Api } from 'api'
+import { CreateOrderPayload } from 'api/types'
 import { IOrder, IOrders } from 'types'
 
 export const fetchOrders = createAsyncThunk<IOrders>('orders/fetchOrders', async () => {

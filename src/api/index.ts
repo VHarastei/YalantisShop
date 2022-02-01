@@ -1,41 +1,16 @@
 import axios from 'axios'
-import { IOrder, IOrders, IProduct, IProductsOrigins, IProductsWithPagination, Origin } from 'types'
+import { IOrder, IOrders, IProduct, IProductsOrigins, IProductsWithPagination } from 'types'
+import {
+  CreateOrderPayload,
+  CreateProductPayload,
+  GetProductsPayload,
+  UpdateProductPayload,
+} from './types'
 
 const instance = axios.create({
   baseURL: 'https://yalantis-react-school-api.yalantis.com/api/v1/',
   headers: { Authorization: process.env.REACT_APP_API_KEY as string },
 })
-
-export type GetProductsPayload = {
-  page?: number
-  perPage?: number
-  origins?: string
-  minPrice?: number
-  maxPrice?: number
-  editable?: boolean
-}
-
-export type CreateProductPayload = {
-  product: {
-    name: string
-    price: number
-    origin: Origin
-  }
-}
-
-export type UpdateProductPayload = {
-  productId: string
-  payload: CreateProductPayload
-}
-
-export type CreateOrderPayload = {
-  order: {
-    pieces: {
-      productId: string
-      count: number
-    }[]
-  }
-}
 
 export const Api = {
   getProducts: (payload: GetProductsPayload): Promise<IProductsWithPagination> =>

@@ -3,11 +3,10 @@ import ReactDOM from 'react-dom'
 
 type PropsType = {
   title: string
-  isOpen: boolean
   onClose: () => void
 }
 
-export const Modal: React.FC<PropsType> = ({ title, isOpen, onClose, children }) => {
+export const Modal: React.FC<PropsType> = ({ title, onClose, children }) => {
   const closeOnEscapeKeyDown = useCallback(
     (e: { key: string }) => {
       if (e.key === 'Escape') onClose()
@@ -24,7 +23,7 @@ export const Modal: React.FC<PropsType> = ({ title, isOpen, onClose, children })
 
   const portalRoot = document.getElementById('root')!
 
-  return isOpen && portalRoot
+  return portalRoot
     ? ReactDOM.createPortal(
         <div
           className="flex fixed top-0 left-0 z-0 justify-center items-start w-screen h-screen bg-black bg-opacity-40"

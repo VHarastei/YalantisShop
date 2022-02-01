@@ -6,7 +6,7 @@ import React, { useMemo } from 'react'
 import { Controller, UseFormReturn } from 'react-hook-form'
 import AsyncSelect from 'react-select/async'
 import { SelectOptions } from 'types'
-import { Input } from './Input'
+import { Input } from '../Input'
 
 type PropsType = UseFormReturn<ProductFormValues, object> & { onSubmit: () => void }
 

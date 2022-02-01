@@ -1,14 +1,14 @@
 import { yupResolver } from '@hookform/resolvers/yup'
-import { CreateProductPayload } from 'api'
+import { CreateProductPayload } from 'api/types'
 import { Button } from 'components/Button'
-import { ProductForm, ProductFormValues } from 'components/ProductForm'
+import { ProductForm, ProductFormValues } from 'components/forms/ProductForm'
 import { useAppDispatch } from 'hooks/useAppDispatch'
 import { originValues } from 'pages/Products/components/OriginSelect'
 import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 import { fetchUpdateProduct } from 'store/slices/products/thunks'
 import { IProduct, Origin } from 'types'
-import { createProductSchema } from 'validationSchemas/createProductSchema'
+import { createProductSchema } from 'components/forms/validationSchemas/createProductSchema'
 
 type PropsType = {
   product: IProduct

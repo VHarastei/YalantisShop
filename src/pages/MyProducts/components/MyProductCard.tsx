@@ -1,16 +1,14 @@
 import { EntityId } from '@reduxjs/toolkit'
 import originIcon from 'assets/origin.svg'
 import { Button } from 'components/Button'
-import { Modal } from 'components/Modal'
+import { EditMyProduct } from 'components/forms/EditMyProductForm'
+import { TriggerableModal } from 'components/TriggerableModal'
 import { useAppSelector } from 'hooks/useAppSelector'
 import { ProductCardPreloader } from 'pages/Products/components/ProductCardPreloader'
-import React, { memo, useState } from 'react'
+import React, { memo } from 'react'
 import { selectProductById } from 'store/slices/products/selectors'
-import { EditMyProduct } from './EditMyProduct'
 
 export const MyProductCard: React.FC<{ productId: EntityId }> = memo(({ productId }) => {
-  const [isOpen, setIsOpen] = useState(false)
-
   const product = useAppSelector((state) => selectProductById(state, productId))
 
   if (!product) return <ProductCardPreloader />
@@ -34,12 +32,18 @@ export const MyProductCard: React.FC<{ productId: EntityId }> = memo(({ productI
         <span className="mr-2 text-xl font-medium text-gray-500">Price:</span>
         <span className="text-3xl font-medium">{`${product.price}$`}</span>
       </div>
-      <Button onClick={() => setIsOpen(true)} fullWidth>
-        Edit
-      </Button>
-      <Modal title="Create Product" isOpen={isOpen} onClose={() => setIsOpen(false)}>
-        <EditMyProduct product={product} handleCloseModal={() => setIsOpen(false)} />
-      </Modal>
+      <TriggerableModal
+        title="Edit Product"
+        trigger={(handleOpenModal) => (
+          <Button onClick={handleOpenModal} fullWidth>
+            Edit
+          </Button>
+        )}
+      >
+        {(handleCloseModal) => (
+          <EditMyProduct product={product} handleCloseModal={handleCloseModal} />
+        )}
+      </TriggerableModal>
     </li>
   )
 })

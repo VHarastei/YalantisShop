@@ -3,6 +3,8 @@ import { configureStore } from '@reduxjs/toolkit'
 import productsReducer from './slices/products/slice'
 import productReducer from './slices/product/slice'
 import cartReducer from './slices/cart/slice'
+import ordersReducer from './slices/orders/slice'
+import orderReducer from './slices/order/slice'
 import throttle from 'lodash/throttle'
 
 export const store = configureStore({
@@ -10,6 +12,8 @@ export const store = configureStore({
     products: productsReducer,
     product: productReducer,
     cart: cartReducer,
+    orders: ordersReducer,
+    order: orderReducer,
   },
 })
 

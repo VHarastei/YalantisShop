@@ -1,6 +1,6 @@
 import { createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { IProduct, IProductsWithPagination, Origin, Status } from 'types'
-import { fetchProducts } from './thunks'
+import { fetchProducts, fetchUpdateProduct } from './thunks'
 
 export const productsAdapter = createEntityAdapter<IProduct>({
   selectId: (product) => product.id,
@@ -63,6 +63,13 @@ export const productsSlice = createSlice({
         }
       }
     },
+    resetProductsState: (state) => {
+      state.filters = initialState.filters
+      state.pagination = initialState.pagination
+      state.status = Status.NEVER
+      state.error = null
+      productsAdapter.removeAll(state)
+    },
   },
   extraReducers: (builder) =>
     builder
@@ -85,7 +92,8 @@ export const productsSlice = createSlice({
           state.error = action.error.message
           state.status = Status.ERROR
         }
-      ),
+      )
+      .addCase(fetchUpdateProduct.fulfilled.type, productsAdapter.setOne),
 })
 
 export default productsSlice.reducer
@@ -98,4 +106,5 @@ export const {
   changeProductsMaxPriceFilter,
   parseProductsSearchParams,
   clearProductsFilters,
+  resetProductsState,
 } = productsSlice.actions

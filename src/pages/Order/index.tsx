@@ -6,8 +6,8 @@ import { useAppSelector } from 'hooks/useAppSelector'
 import { OrderCard } from 'pages/Orders/components/OrderCard'
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
+import { orderActions } from 'store/slices/order/saga'
 import { selectOrder, selectOrderStatus } from 'store/slices/order/selectors'
-import { fetchOrder } from 'store/slices/order/thunks'
 import { Status } from 'types'
 
 export const Order = () => {
@@ -19,7 +19,10 @@ export const Order = () => {
   const status = useAppSelector(selectOrderStatus)
 
   useEffect(() => {
-    if (!order) dispatch(fetchOrder(orderId))
+    if (!order) dispatch(orderActions.init(orderId))
+
+    // Change logic according to HM#4
+    //if (!order) dispatch(fetchOrder(orderId))
   }, [orderId, dispatch, order])
 
   if (!order) return <Preloader />

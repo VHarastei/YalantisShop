@@ -1,12 +1,11 @@
-import { CreateOrderPayload } from 'api/types'
 import { Button } from 'components/Button'
 import { Paper } from 'components/Paper'
 import { useAppDispatch } from 'hooks/useAppDispatch'
 import { useAppSelector } from 'hooks/useAppSelector'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { selectAllCartProducts, selectCartTotalProducts } from 'store/slices/cart/selectors'
-import { fetchCreateOrder } from 'store/slices/orders/thunks'
+import { createOrderActions } from 'store/slices/orders/saga'
 
 export const CartTotal = () => {
   const dispatch = useAppDispatch()
@@ -18,19 +17,28 @@ export const CartTotal = () => {
   const [isError, setIsError] = useState(false)
 
   const handleCreateOrder = async () => {
-    const payload: CreateOrderPayload = {
+    const payload = {
       order: {
         pieces: products.map((p) => ({ productId: p.id, count: p.quantity })),
       },
     }
 
     try {
-      await dispatch(fetchCreateOrder(payload)).unwrap()
-      navigate('/orders')
+      dispatch(createOrderActions.init(payload))
+
+      // Change logic according to HM#4
+      //await dispatch(fetchCreateOrder(payload)).unwrap()
+      //navigate('/orders')
     } catch (err) {
       setIsError(true)
     }
   }
+
+  useEffect(() => {
+    if (products.length === 0) {
+      navigate('/orders')
+    }
+  }, [products, navigate])
 
   return (
     <div className="w-full max-w-xs">

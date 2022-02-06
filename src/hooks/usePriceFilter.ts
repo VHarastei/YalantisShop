@@ -29,41 +29,68 @@ export const usePriceFilter = (min: number, max: number) => {
     }
   }
 
-  const handleChangeMinPrice = changePrice((val) => setMinPrice(val))
-  const handleChangeMaxPrice = changePrice((val) => setMaxPrice(val))
-
-  const validateMinPrice = () => {
-    dispatch(changeProductsMinPriceFilter(minPrice))
+  const handleChangeMinPrice = changePrice((val) => {
+    dispatch(changeProductsMinPriceFilter(val))
     dispatch(changeProductsCurrentPage(1))
 
     searchParams.delete('min')
     searchParams.delete('page')
 
-    if (minPrice > 0) {
-      searchParams.append('min', minPrice.toString())
+    if (val > 0) {
+      searchParams.append('min', val.toString())
     }
     setSearchParams(searchParams)
-  }
+    setMinPrice(val)
+  })
 
-  const validateMaxPrice = () => {
-    dispatch(changeProductsMaxPriceFilter(maxPrice))
+  const handleChangeMaxPrice = changePrice((val) => {
+    dispatch(changeProductsMaxPriceFilter(val))
     dispatch(changeProductsCurrentPage(1))
 
     searchParams.delete('max')
     searchParams.delete('page')
 
-    if (maxPrice > 0) {
-      searchParams.append('max', maxPrice.toString())
+    if (val > 0) {
+      searchParams.append('max', val.toString())
     }
     setSearchParams(searchParams)
-  }
+    setMaxPrice(val)
+  })
+
+  // Change logic according to HM#4
+
+  // const validateMinPrice = () => {
+  //   dispatch(changeProductsMinPriceFilter(minPrice))
+  //   dispatch(changeProductsCurrentPage(1))
+
+  //   searchParams.delete('min')
+  //   searchParams.delete('page')
+
+  //   if (minPrice > 0) {
+  //     searchParams.append('min', minPrice.toString())
+  //   }
+  //   setSearchParams(searchParams)
+  // }
+
+  // const validateMaxPrice = () => {
+  //   dispatch(changeProductsMaxPriceFilter(maxPrice))
+  //   dispatch(changeProductsCurrentPage(1))
+
+  //   searchParams.delete('max')
+  //   searchParams.delete('page')
+
+  //   if (maxPrice > 0) {
+  //     searchParams.append('max', maxPrice.toString())
+  //   }
+  //   setSearchParams(searchParams)
+  // }
 
   return {
     minPrice,
     maxPrice,
     handleChangeMinPrice,
     handleChangeMaxPrice,
-    validateMinPrice,
-    validateMaxPrice,
+    // validateMinPrice,
+    // validateMaxPrice,
   }
 }

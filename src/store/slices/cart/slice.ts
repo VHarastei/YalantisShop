@@ -1,7 +1,7 @@
 import { createEntityAdapter, createSlice, PayloadAction } from '@reduxjs/toolkit'
 import { IProduct, IProductWithQuantity } from 'types'
 import { loadState } from 'utils/loadState'
-import { fetchCreateOrder } from '../orders/thunks'
+import { createOrderActions } from '../orders/saga'
 
 export const cartAdapter = createEntityAdapter<IProductWithQuantity>({
   selectId: (product) => product.id,
@@ -52,10 +52,16 @@ export const cartSlice = createSlice({
     },
   },
   extraReducers: (builder) =>
-    builder.addCase(fetchCreateOrder.fulfilled.type, (state) => {
+    builder.addCase(createOrderActions.success, (state) => {
       cartAdapter.removeAll(state)
       state.totalProducts = 0
     }),
+
+  // Change logic according to HM#4
+  // builder.addCase(fetchCreateOrder.fulfilled.type, (state) => {
+  //   cartAdapter.removeAll(state)
+  //   state.totalProducts = 0
+  // }),
 })
 
 export default cartSlice.reducer

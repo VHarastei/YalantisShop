@@ -6,6 +6,10 @@ import cartReducer from './slices/cart/slice'
 import ordersReducer from './slices/orders/slice'
 import orderReducer from './slices/order/slice'
 import throttle from 'lodash/throttle'
+import { rootSaga } from './rootSaga'
+import createSagaMiddleware from 'redux-saga'
+
+const sagaMiddleware = createSagaMiddleware()
 
 export const store = configureStore({
   reducer: {
@@ -15,7 +19,9 @@ export const store = configureStore({
     orders: ordersReducer,
     order: orderReducer,
   },
+  middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(sagaMiddleware),
 })
+sagaMiddleware.run(rootSaga)
 
 store.subscribe(
   throttle(() => {

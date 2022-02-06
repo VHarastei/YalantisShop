@@ -1,6 +1,7 @@
 import { ErrorCard } from 'components/ErrorCard'
 import { useAppDispatch } from 'hooks/useAppDispatch'
 import { useAppSelector } from 'hooks/useAppSelector'
+import { useDebounceFilters } from 'hooks/useDebounceFilters'
 import { Pagination } from 'pages/Products/components/Pagination'
 import { ProductCardPreloader } from 'pages/Products/components/ProductCardPreloader'
 import { ProductsFilters } from 'pages/Products/components/ProductsFilters'
@@ -28,7 +29,11 @@ export const MyProducts = () => {
     perPage: itemsPerPage,
     totalItems: numberOfItems,
   } = useAppSelector(selectProductsPagination)
-  const { origins, minPrice, maxPrice } = useAppSelector(selectProductsFilters)
+
+  // Change logic according to HM#4
+  //const { origins, minPrice, maxPrice } = useAppSelector(selectProductsFilters)
+  const filters = useAppSelector(selectProductsFilters)
+  const { origins, minPrice, maxPrice } = useDebounceFilters(filters, 500)
 
   const productIds = useAppSelector(selectProductIds)
   const status = useAppSelector(selectProductsStatus)
@@ -62,7 +67,7 @@ export const MyProducts = () => {
   return (
     <div className="mb-4">
       <h1 className="mb-4 text-4xl font-bold text-center text-green-500">List of My Products</h1>
-      <ProductsFilters origins={origins} minPrice={minPrice} maxPrice={maxPrice} />
+      <ProductsFilters />
 
       <ul className="flex flex-wrap gap-4 justify-center">
         {status === Status.SUCCESS

@@ -1,5 +1,5 @@
 # YalantisShop 
-####[Live Demo](https://yalantis-shop.netlify.app/)
+[Live Demo](https://yalantis-shop.netlify.app/)
 
 This is an online store app. Here you can view a list of products, add them to the cart, place an order, view the history of your orders, as well as create your own product
 Application uses Yalantis React School API

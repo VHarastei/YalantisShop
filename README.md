@@ -16,7 +16,7 @@ Application uses Yalantis React School API
 
 ## Technologies
 
-The app is written in typescript using React best practices
+The app is written in TypeScript using React best practices
 
 Technologies used: 
 - React, React-Hook-Form, Yup
